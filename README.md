@@ -9,11 +9,49 @@ Built in two stages: first an MCP server, then an AI agent that uses it.
 
 ```
 learn-mcps/
+├── .venv/              # shared virtual environment (uv workspace)
+├── uv.lock             # single lockfile, deps deduplicated across projects
+├── pyproject.toml      # workspace root
 ├── expense-tracker/    # MCP server — exposes expense tools to any MCP client
 └── expense-agent/      # AI agent — uses those tools via natural language
 ```
 
 These two projects are intentionally separate. The MCP server knows nothing about agents. The agent knows nothing about SQLite. They communicate only through the MCP protocol.
+
+---
+
+## Monorepo Setup (uv Workspace)
+
+This repo uses [uv workspaces](https://docs.astral.sh/uv/concepts/workspaces/) — both projects share one venv and one lockfile, but each declares its own dependencies in its own `pyproject.toml`.
+
+```toml
+# root pyproject.toml
+[tool.uv.workspace]
+members = ["expense-tracker", "expense-agent"]
+```
+
+**Setup from scratch:**
+
+```bash
+git clone <repo>
+uv sync          # installs all deps for both projects into root .venv
+```
+
+**Run either project:**
+
+```bash
+# from root
+uv run --package expense-agent python expense-agent/main.py
+
+# or from project dir
+cd expense-agent && uv run python main.py
+```
+
+**Add a dep to a specific project:**
+
+```bash
+cd expense-agent && uv add some-package   # updates root uv.lock automatically
+```
 
 ---
 
@@ -114,8 +152,8 @@ The decorator registers the function as an MCP tool. The docstring becomes the d
 ### Running it
 
 ```bash
+# from repo root — uv sync already done
 cd expense-tracker
-uv sync
 
 # Option 1 — MCP Inspector (visual UI to test tools)
 uv run mcp dev server.py
@@ -196,8 +234,8 @@ async with agent:
 ### Setup
 
 ```bash
+# from repo root — uv sync already done
 cd expense-agent
-uv sync
 
 cp .env.example .env
 # edit .env → OPENROUTER_API_KEY=sk-or-...
@@ -282,7 +320,7 @@ Free models vary in tool-calling reliability. Swap model in `agent.py`:
 `load_dotenv()` must be in `agent.py` (runs at import time), not only in `main.py`.
 
 **expense-tracker server fails to start from agent**  
-Verify `EXPENSE_TRACKER_PATH` in `agent.py` is correct. Run `uv sync` inside `expense-tracker/` first.
+Verify `EXPENSE_TRACKER_PATH` in `agent.py` is correct. Run `uv sync` at repo root first.
 
 **`mcp dev server.py` fails with typer error**  
 Needs CLI extras: `uv add "mcp[cli]"` inside `expense-tracker/`.
