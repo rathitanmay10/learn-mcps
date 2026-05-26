@@ -1,0 +1,2 @@
+[tool.uv.workspace]
+members = ["expense-tracker", "expense-agent"]
