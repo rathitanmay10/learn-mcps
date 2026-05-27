@@ -1,6 +1,5 @@
-import typer
-
 import db
+import typer
 
 db.init_db()
 
@@ -19,7 +18,10 @@ def add(
         typer.echo("Error: amount must be positive", err=True)
         raise typer.Exit(1)
     row = db.add_expense(amount, category, description, date)
-    typer.echo(f"Added  #{row['id']}  {row['date']}  [{row['category']}]  {row['amount']:.2f}  {row['description']}")
+    typer.echo(
+        f"Added  #{row['id']}  {row['date']}  [{row['category']}]"
+        f"  {row['amount']:.2f}  {row['description']}"
+    )
 
 
 @app.command("list")
@@ -34,7 +36,10 @@ def list_expenses(
     typer.echo(f"{'ID':>4}  {'Date':10}  {'Category':12}  {'Amount':>8}  Description")
     typer.echo("-" * 60)
     for r in rows:
-        typer.echo(f"{r['id']:>4}  {r['date']:10}  {r['category']:12}  {r['amount']:>8.2f}  {r['description']}")
+        typer.echo(
+            f"{r['id']:>4}  {r['date']:10}  {r['category']:12}"
+            f"  {r['amount']:>8.2f}  {r['description']}"
+        )
 
 
 @app.command()
