@@ -1,4 +1,4 @@
-.PHONY: sync lint test agent inspector
+.PHONY: sync lint test agent inspector cli
 
 sync:
 	uv sync
@@ -15,3 +15,6 @@ agent:
 
 inspector:
 	cd expense-tracker && uv run mcp dev server.py
+
+cli:
+	cd expense-tracker && uv run python cli.py $(ARGS)

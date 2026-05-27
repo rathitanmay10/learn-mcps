@@ -327,6 +327,7 @@ source = { virtual = "expense-tracker" }
 dependencies = [
     { name = "mcp", extra = ["cli"] },
     { name = "ruff" },
+    { name = "typer" },
 ]
 
 [package.optional-dependencies]
@@ -339,6 +340,7 @@ requires-dist = [
     { name = "mcp", extras = ["cli"], specifier = ">=1.27.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8" },
     { name = "ruff", specifier = ">=0.15.14" },
+    { name = "typer", specifier = ">=0.25.1" },
 ]
 provides-extras = ["dev"]
 
