@@ -1,5 +1,7 @@
-from mcp.server.fastmcp import FastMCP
+from datetime import datetime
+
 import db
+from mcp.server.fastmcp import FastMCP
 
 db.init_db()
 
@@ -7,9 +9,7 @@ mcp = FastMCP("expense-tracker")
 
 
 @mcp.tool()
-def add_expense(
-    amount: float, category: str, description: str, date: str | None = None
-) -> dict:
+def add_expense(amount: float, category: str, description: str, date: str | None = None) -> dict:
     """Add a new expense.
 
     Args:
@@ -20,6 +20,11 @@ def add_expense(
     """
     if amount <= 0:
         raise ValueError("amount must be positive")
+    if date is not None:
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(f"date must be YYYY-MM-DD, got: {date!r}") from None
     return db.add_expense(amount, category, description, date)
 
 
@@ -30,6 +35,8 @@ def list_expenses(limit: int = 20) -> list[dict]:
     Args:
         limit: Max number of expenses to return (default 20)
     """
+    if limit <= 0:
+        raise ValueError("limit must be positive")
     return db.list_expenses(limit)
 
 

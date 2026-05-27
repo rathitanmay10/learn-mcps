@@ -28,17 +28,17 @@ def init_db() -> None:
 def add_expense(
     amount: float, category: str, description: str, expense_date: str | None = None
 ) -> dict:
+    if amount <= 0:
+        raise ValueError("amount must be positive")
     if expense_date is None:
         expense_date = date.today().isoformat()
     with get_conn() as conn:
-        cur = conn.execute(
-            "INSERT INTO expenses (amount, category, description, date) VALUES (?, ?, ?, ?)",
-            (amount, category.lower(), description, expense_date),
+        sql = (
+            "INSERT INTO expenses (amount, category, description, date)"
+            " VALUES (?, ?, ?, ?) RETURNING *"
         )
-        row = conn.execute(
-            "SELECT * FROM expenses WHERE id = ?", (cur.lastrowid,)
-        ).fetchone()
-        return dict(row)
+        cur = conn.execute(sql, (amount, category.lower(), description, expense_date))
+        return dict(cur.fetchone())
 
 
 def list_expenses(limit: int = 20) -> list[dict]:
