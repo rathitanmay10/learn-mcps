@@ -1,6 +1,7 @@
 import asyncio
-from dotenv import load_dotenv
+
 from agent import agent
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -17,9 +18,12 @@ async def main():
             if user_input.lower() in ("quit", "exit"):
                 break
 
-            result = await agent.run(user_input, message_history=history)
-            history = result.all_messages()
-            print(f"Agent: {result.output}\n")
+            try:
+                result = await agent.run(user_input, message_history=history)
+                history = result.all_messages()
+                print(f"Agent: {result.output}\n")
+            except Exception as e:
+                print(f"Error: {e}\n")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 [project]
 name = "expense-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI agent that uses expense-tracker MCP server via natural language"
 requires-python = ">=3.13"
 dependencies = [
     "fastmcp>=3.3.1",

@@ -1,8 +1,10 @@
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+from fastmcp.client.transports import StdioTransport
 from pydantic_ai import Agent
 from pydantic_ai.mcp import MCPToolset
-from fastmcp.client.transports import StdioTransport
-from pathlib import Path
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -16,8 +18,10 @@ mcp_toolset = MCPToolset(
     )
 )
 
+MODEL = os.getenv("AGENT_MODEL", "openrouter:z-ai/glm-4.5-air:free")
+
 agent = Agent(
-    "openrouter:z-ai/glm-4.5-air:free",
+    model=MODEL,
     toolsets=[mcp_toolset],
     system_prompt=(
         "You are an expense tracking assistant. "
