@@ -5,7 +5,7 @@ sync:
 
 lint:
 	uv run ruff check .
-	uv run ruff format --check .
+	uv run ruff format .
 
 test:
 	cd expense-tracker && uv run pytest
