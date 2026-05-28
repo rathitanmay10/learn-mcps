@@ -1,18 +1,16 @@
 import asyncio
 
 from agent import agent
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 async def main():
     print("Expense Agent ready. Type 'quit' to exit.\n")
     history = []
+    loop = asyncio.get_event_loop()
 
     async with agent:
         while True:
-            user_input = input("You: ").strip()
+            user_input = (await loop.run_in_executor(None, input, "You: ")).strip()
             if not user_input:
                 continue
             if user_input.lower() in ("quit", "exit"):

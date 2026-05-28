@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import db
 from mcp.server.fastmcp import FastMCP
 
@@ -18,13 +16,6 @@ def add_expense(amount: float, category: str, description: str, date: str | None
         description: Short description of the expense
         date: Date in YYYY-MM-DD format. Defaults to today.
     """
-    if amount <= 0:
-        raise ValueError("amount must be positive")
-    if date is not None:
-        try:
-            datetime.strptime(date, "%Y-%m-%d")
-        except ValueError:
-            raise ValueError(f"date must be YYYY-MM-DD, got: {date!r}") from None
     return db.add_expense(amount, category, description, date)
 
 
